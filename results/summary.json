@@ -1,0 +1,15 @@
+{
+  "n_total": 3834,
+  "n_predictor_train": 2453,
+  "n_predictor_validation": 614,
+  "n_predictor_test": 767,
+  "predictor_test_MAE_log10_uM": 0.4352574592056162,
+  "predictor_test_R2": 0.5307585943972137,
+  "generator_training_sequences": 2453,
+  "samples_requested": 350,
+  "valid_samples": 343,
+  "unique_valid_samples": 343,
+  "novel_unique_samples": 343,
+  "generation_method": "autoregressive GRU",
+  "predictor": "ExtraTrees"
+}
