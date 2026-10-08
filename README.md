@@ -26,6 +26,38 @@ python make_figures.py
 
 The source data file `EC.csv` is **not redistributed** here because its redistribution rights have not been confirmed. To reproduce the run, provide a CSV containing `SEQUENCE` and `EC_MIC` (MIC in µM).
 
+## Inputs and observed outcomes
+
+The project has **two distinct input-to-output workflows**. The numbers below are from one exploratory run (random seed 42), not experimental laboratory validation.
+
+| Workflow | Input | Processing | Output / observed outcome |
+| --- | --- | --- | --- |
+| Dataset curation | `EC.csv` containing `SEQUENCE` and `EC_MIC` (MIC in µM) | Canonical amino acids only, 8–45 residues; median MIC for duplicate sequences | **3,834 unique eligible peptide sequences** |
+| MIC prediction | Peptide sequence represented by amino-acid frequencies, length, charge and hydrophobicity proxies | ExtraTrees regression predicts log10(MIC in µM) | On **767 held-out sequences**: **MAE 0.435 log10(µM)** and **R² 0.531** |
+| Generative sequence modelling | **2,453 training peptide sequences** from the curated dataset; no desired property specified | PyTorch autoregressive GRU, four training epochs | **350 sampled sequences**, of which **343 were unique, valid and absent from the curated dataset by exact match** |
+| Candidate screening | Newly generated valid peptide sequences | Trained ExtraTrees predictor estimates MIC | Candidate sequences are ranked by **predicted MIC (µM)**; lower values indicate stronger *predicted* antibacterial potency |
+
+### Input example and output interpretation
+
+**Predicting activity for an existing peptide**
+
+- **Input:** A peptide sequence containing standard one-letter amino-acid codes, for example `KWKLFKKIGAVLKVL`. This is an *illustrative input format*, **not** a verified prediction from the saved experiment.
+- **Output:** A predicted log10 MIC value and its corresponding MIC in µM. For example, a hypothetical prediction of **0.30 log10(µM)** corresponds to **about 2.0 µM** (`10 ** 0.30`). This is a calculation example, **not a measured or previously generated result**.
+
+**Generating and prioritising new peptides**
+
+- **Input:** A trained generator and sampling parameters (`--samples 350`, random seed 42). The generator is **unconditional**: it does not accept a target MIC, desired affinity, or toxicity constraint.
+- **Output:** Candidate amino-acid sequences, their lengths, predicted log10 MIC and predicted MIC in µM, ordered from lower to higher predicted MIC.
+- **Observed outcome:** 343 unique valid generated sequences were not exact matches to any curated input sequence. This demonstrates sequence generation and exact-match novelty, **not confirmed antimicrobial activity**.
+
+### What the metrics mean
+
+- **MAE 0.435 log10(µM):** The predictor's average absolute error on held-out sequences in log10 MIC units. It should not be interpreted as an error of 0.435 µM.
+- **R² 0.531:** The model explained approximately 53.1% of the variation in the held-out log10 MIC values in this split.
+- **343 novel sequences:** Novelty is limited to **exact sequence matching** against this dataset. Similarity-controlled novelty, toxicity, synthesis feasibility and laboratory MIC remain untested.
+
+The experimental outputs are summarised in [results/summary.json](results/summary.json) and [results/RESULTS.md](results/RESULTS.md). The [training curve](results/training_curve.svg) shows the GRU's training loss over four epochs.
+
 ## Exploratory results (seed 42)
 
 | Metric | Value |
