@@ -1,6 +1,6 @@
 # Peptide Design: Generative Modelling and MIC Prediction
 
-An exploratory computational research project for **antimicrobial peptide sequence generation and potency prediction**.
+This is an open-source computational research prototype integrating generative deep learning and quantitative antimicrobial activity prediction. Users can use this to explore peptide sequence generation, evaluate MIC regression models, and computationally prioritise candidates for further investigation.
 
 The pipeline trains a lightweight **PyTorch autoregressive GRU** on canonical peptide sequences and uses a separate **ExtraTrees regression model** to rank generated sequences by predicted *Escherichia coli* minimum inhibitory concentration (MIC).
 
