@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local experimental inputs and generated model weights
+EC.csv
+*.pt
